@@ -13,20 +13,15 @@ import 'package:peraktheguide/home_page.dart';
 import 'package:peraktheguide/about_us.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:peraktheguide/stay.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   CachedNetworkImage.logLevel = CacheManagerLogLevel.debug;
 
-  await FlutterDownloader.initialize(
-      debug:
-          true, // optional: set to false to disable printing logs to console (default: true)
-      ignoreSsl:
-          true // option: set to false to disable working with http links (default: false)
-      );
+  await FlutterDownloader.initialize(debug: true, ignoreSsl: true);
 
-  // Initialize Google Mobile Ads SDK
   MobileAds.instance.initialize();
 
   runApp(MyApp());
@@ -41,9 +36,40 @@ class MyApp extends StatelessWidget {
       title: 'PERAK THE GUIDE',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-            seedColor: const Color.fromARGB(255, 0, 71, 133)),
+        primaryColor: const Color(0xFF1A1A1A), // Rich Black
+        scaffoldBackgroundColor: Colors.white,
+        colorScheme: ColorScheme.light(
+          primary: const Color(0xFF1A1A1A),
+          secondary: const Color(0xFFFFD700), // Gold Yellow
+          tertiary: const Color(0xFFFFA500), // Vibrant Orange-Yellow
+          surface: Colors.white,
+          background: Colors.white,
+        ),
         useMaterial3: true,
+        fontFamily: 'Roboto',
+        appBarTheme: const AppBarTheme(
+          elevation: 0,
+          centerTitle: false,
+          backgroundColor: Color(0xFF1A1A1A),
+          foregroundColor: Colors.white,
+          titleTextStyle: TextStyle(
+            color: Colors.white,
+            fontSize: 20,
+            fontWeight: FontWeight.w700,
+            letterSpacing: 1.2,
+          ),
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xFFFFD700),
+            foregroundColor: const Color(0xFF1A1A1A),
+            elevation: 0,
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+        ),
       ),
       home: const MyHomePage(title: 'Home'),
       routes: {
@@ -82,9 +108,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
   int currentPageIndex = 0;
   final String desiredVersion = '1.5.0';
-
   DateTime? currentBackPressTime;
-
   bool isDialogShown = false;
 
   late BannerAd _bannerAd;
@@ -95,7 +119,6 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
 
-    // Load a banner ad
     _bannerAd = BannerAd(
       adUnitId: 'ca-app-pub-7002644831588730/5297882189',
       request: const AdRequest(),
@@ -133,13 +156,21 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
   Future<bool> _onWillPop() async {
     final now = DateTime.now();
     if (currentBackPressTime == null ||
-        now.difference(currentBackPressTime!) > Duration(seconds: 2)) {
+        now.difference(currentBackPressTime!) > const Duration(seconds: 2)) {
       currentBackPressTime = now;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Press back again to exit'),
-          duration: Duration(seconds: 2),
+          content: const Text(
+            'Press back again to exit',
+            style: TextStyle(color: Color(0xFF1A1A1A)),
+          ),
+          duration: const Duration(seconds: 2),
           behavior: SnackBarBehavior.floating,
+          backgroundColor: const Color(0xFFFFD700),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          margin: const EdgeInsets.all(16),
         ),
       );
       return false;
@@ -153,9 +184,44 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
       onWillPop: _onWillPop,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text("PERAK THE GUIDE",
-              style: TextStyle(color: Colors.white)),
-          backgroundColor: const Color.fromARGB(255, 0, 71, 133),
+          title: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFFFD700),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Icon(
+                  Icons.location_city,
+                  color: Color(0xFF1A1A1A),
+                  size: 20,
+                ),
+              ),
+              const SizedBox(width: 12),
+              const Text("PERAK"),
+              const SizedBox(width: 4),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFFFD700).withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(6),
+                  border: Border.all(
+                    color: const Color(0xFFFFD700),
+                    width: 1.5,
+                  ),
+                ),
+                child: const Text(
+                  "THE GUIDE",
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 1.5,
+                  ),
+                ),
+              ),
+            ],
+          ),
           actions: const <Widget>[
             AppBarMore(),
           ],
@@ -164,37 +230,81 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
           mainAxisSize: MainAxisSize.min,
           children: [
             if (_isBannerAdReady)
-              SizedBox(
-                height: _bannerAd.size.height.toDouble(),
-                width: _bannerAd.size.width.toDouble(),
-                child: AdWidget(ad: _bannerAd),
+              Container(
+                height: 50, // ✅ ADD THIS LINE
+                width: double.infinity, // ✅ ADD THIS LINE
+                decoration: BoxDecoration(
+                  color: Colors.grey[100],
+                  border: Border(
+                    top: BorderSide(
+                      color: Colors.grey[300]!,
+                      width: 1,
+                    ),
+                  ),
+                ),
+                child: AdWidget(ad: _bannerAd), // ✅ REMOVE the inner SizedBox
               ),
-            NavigationBar(
-              onDestinationSelected: (int index) {
-                setState(() {
-                  currentPageIndex = index;
-                });
-              },
-              selectedIndex: currentPageIndex,
-              destinations: const <Widget>[
-                NavigationDestination(
-                    selectedIcon: Icon(Icons.home,
-                        color: Color.fromARGB(255, 0, 71, 133)),
-                    icon: Icon(Icons.home_outlined),
-                    label: 'Home'),
-                NavigationDestination(
-                    selectedIcon: Icon(Icons.menu_book,
-                        color: Color.fromARGB(255, 0, 71, 133)),
-                    icon: Icon(Icons.menu_book_outlined),
-                    label: 'E-Book'),
-              ],
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                    blurRadius: 10,
+                    offset: const Offset(0, -2),
+                  ),
+                ],
+              ),
+              child: NavigationBar(
+                onDestinationSelected: (int index) {
+                  setState(() {
+                    currentPageIndex = index;
+                  });
+                },
+                selectedIndex: currentPageIndex,
+                backgroundColor: Colors.white,
+                elevation: 0,
+                indicatorColor: const Color(0xFFFFD700).withOpacity(0.3),
+                labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
+                destinations: const <Widget>[
+                  NavigationDestination(
+                    selectedIcon: Icon(
+                      Icons.home_rounded,
+                      color: Color(0xFF1A1A1A),
+                      size: 28,
+                    ),
+                    icon: Icon(
+                      Icons.home_outlined,
+                      color: Color(0xFF666666),
+                      size: 24,
+                    ),
+                    label: 'Home',
+                  ),
+                  NavigationDestination(
+                    selectedIcon: Icon(
+                      Icons.menu_book_rounded,
+                      color: Color(0xFF1A1A1A),
+                      size: 28,
+                    ),
+                    icon: Icon(
+                      Icons.menu_book_outlined,
+                      color: Color(0xFF666666),
+                      size: 24,
+                    ),
+                    label: 'E-Book',
+                  ),
+                ],
+              ),
             ),
           ],
         ),
-        body: [
-          HomeScreen(),
-          Ebook(),
-        ][currentPageIndex],
+        body: AnimatedSwitcher(
+          duration: const Duration(milliseconds: 300),
+          child: [
+            HomeScreen(),
+            Ebook(),
+          ][currentPageIndex],
+        ),
       ),
     );
   }
@@ -206,8 +316,24 @@ class AppBarMore extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton<String>(
-      icon: const Icon(Icons.more_vert),
+      icon: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: const Color(0xFFFFD700).withOpacity(0.2),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: const Icon(
+          Icons.more_vert_rounded,
+          color: Colors.white,
+          size: 20,
+        ),
+      ),
       color: Colors.white,
+      elevation: 8,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+      offset: const Offset(0, 50),
       onSelected: (value) {
         if (value == 'Contact Us') {
           Navigator.of(context).push(MaterialPageRoute(
@@ -221,13 +347,60 @@ class AppBarMore extends StatelessWidget {
       },
       itemBuilder: (BuildContext context) {
         return <PopupMenuEntry<String>>[
-          const PopupMenuItem<String>(
+          PopupMenuItem<String>(
             value: 'About Us',
-            child: Text('About Us'),
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFFFD700).withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: const Icon(
+                    Icons.info_outline_rounded,
+                    color: Color(0xFF1A1A1A),
+                    size: 20,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                const Text(
+                  'About Us',
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
           ),
-          const PopupMenuItem<String>(
+          const PopupMenuDivider(height: 1),
+          PopupMenuItem<String>(
             value: 'Contact Us',
-            child: Text('Contact Us'),
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFFFD700).withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: const Icon(
+                    Icons.contact_mail_outlined,
+                    color: Color(0xFF1A1A1A),
+                    size: 20,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                const Text(
+                  'Contact Us',
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
           ),
         ];
       },
@@ -251,10 +424,10 @@ class MyFlutterApp {
   static const String? _kFontPkg = null;
 
   static const IconData instagram_1 =
-      IconData(0xe800, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  IconData(0xe800, fontFamily: _kFontFam, fontPackage: _kFontPkg);
 
   static const IconData whatsapp =
-      IconData(0xf232, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  IconData(0xf232, fontFamily: _kFontFam, fontPackage: _kFontPkg);
 }
 
 class ImageData {

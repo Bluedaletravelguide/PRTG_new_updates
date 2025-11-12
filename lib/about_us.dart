@@ -5,185 +5,409 @@ import 'package:peraktheguide/main.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
+// Color Theme
+class AppTheme {
+  static const Color primaryYellow = Color(0xFFFDB813);
+  static const Color darkBlack = Color(0xFF1A1A1A);
+  static const Color softWhite = Color(0xFFFAFAFA);
+  static const Color accentGold = Color(0xFFFFD700);
+  static const Color textGrey = Color(0xFF666666);
+}
+
 class AboutUsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        iconTheme: const IconThemeData(
-          color: Colors.white, //change your color here
-        ),
-        title: const Text("About Us", style: TextStyle(color: Colors.white)),
-        // foregroundColor: const Color.fromARGB(255, 0, 71, 133),
-        backgroundColor: const Color.fromARGB(255, 0, 71, 133),
-        actions: const <Widget>[
-          AppBarMore(),
+      backgroundColor: AppTheme.softWhite,
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            expandedHeight: 200.0,
+            floating: false,
+            pinned: true,
+            elevation: 0,
+            backgroundColor: AppTheme.darkBlack,
+            iconTheme: const IconThemeData(color: AppTheme.primaryYellow),
+            actions: const <Widget>[AppBarMore()],
+            flexibleSpace: FlexibleSpaceBar(
+              title: const Text(
+                'About Us',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              background: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      AppTheme.darkBlack,
+                      AppTheme.darkBlack.withOpacity(0.8),
+                    ],
+                  ),
+                ),
+                child: Center(
+                  child: Container(
+                    margin: const EdgeInsets.only(top: 40),
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: AppTheme.primaryYellow.withOpacity(0.1),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Image.asset(
+                      'assets/icon/perak_icon.png',
+                      width: 80,
+                      height: 80,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  // Company Info Card
+                  _buildCompanyCard(),
+                  const SizedBox(height: 24),
+
+                  // Social Media Section
+                  _buildSocialMediaSection(context),
+                  const SizedBox(height: 32),
+
+                  // App Version Card
+                  _buildVersionCard(),
+                  const SizedBox(height: 24),
+
+                  // Copyright Section
+                  _buildCopyrightSection(),
+                ],
+              ),
+            ),
+          ),
         ],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
+    );
+  }
+
+  Widget _buildCompanyCard() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: AppTheme.primaryYellow.withOpacity(0.1),
+            blurRadius: 20,
+            offset: const Offset(0, 10),
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(24.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Image.asset(
-              'assets/icon/perak_icon.png',
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: AppTheme.primaryYellow.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: const Icon(
+                Icons.business_rounded,
+                color: AppTheme.primaryYellow,
+                size: 48,
+              ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 20),
             const Text(
               'Our Company',
               style: TextStyle(
-                fontSize: 24,
+                fontSize: 28,
                 fontWeight: FontWeight.bold,
+                color: AppTheme.darkBlack,
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 16),
+            Container(
+              height: 4,
+              width: 60,
+              decoration: BoxDecoration(
+                color: AppTheme.primaryYellow,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            const SizedBox(height: 20),
             const Text(
-              "Klang Valley 4 Locals is a free quarterly travel guidebook, providing an overall coverage on the whole Klang Valley area featuring hidden gems and hotspots for tourists. ",
-              textAlign: TextAlign.justify,
-              style: TextStyle(fontSize: 16),
+              "Klang Valley 4 Locals is a free quarterly travel guidebook, providing an overall coverage on the whole Klang Valley area featuring hidden gems and hotspots for tourists.",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 16,
+                height: 1.6,
+                color: AppTheme.textGrey,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSocialMediaSection(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [AppTheme.primaryYellow, AppTheme.accentGold],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: AppTheme.primaryYellow.withOpacity(0.3),
+            blurRadius: 20,
+            offset: const Offset(0, 10),
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(28.0),
+        child: Column(
+          children: [
+            const Icon(
+              Icons.connect_without_contact_rounded,
+              color: AppTheme.darkBlack,
+              size: 48,
             ),
             const SizedBox(height: 16),
             const Text(
-              'Find Us',
+              'Connect With Us',
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
+                color: AppTheme.darkBlack,
               ),
             ),
             const SizedBox(height: 8),
-            // const Text(
-            //   "No.31-2, Block F2, Level 2, Jalan PJU 1/42a, Dataran Prima, 47301 Petaling Jaya, Selangor.",
-            //   textAlign: TextAlign.justify,
-            //   style: TextStyle(fontSize: 16),
-            // ),
-            // const SizedBox(height: 8),
-            // Container(
-            //   child: const Text(
-            //     "Opening Hours:",
-            //     textAlign: TextAlign.start,
-            //     style: TextStyle(fontSize: 16),
-            //   ),
-            // ),
-            // RichText(
-            //   text: const TextSpan(
-            //     text: 'Monday-Friday :',
-            //     style:
-            //         TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-            //     children: [
-            //       TextSpan(
-            //         text: '9:00AM - 6:00PM',
-            //         style: TextStyle(color: Colors.black),
-            //       ),
-            //     ],
-            //   ),
-            // ),
-            // const SizedBox(height: 8),
-            // RichText(
-            //   text: TextSpan(
-            //     text: 'Mobile Num.: ',
-            //     style: const TextStyle(
-            //         color: Colors.black, fontWeight: FontWeight.bold),
-            //     children: [
-            //       TextSpan(
-            //         text: '+6012-2200622',
-            //         style: const TextStyle(color: Colors.blue),
-            //         recognizer: TapGestureRecognizer()
-            //           ..onTap = () {
-            //             _launchURL('tel:+60122200622');
-            //           },
-            //       ),
-            //     ],
-            //   ),
-            // ),
-            // const SizedBox(height: 8),
-            // RichText(
-            //   text: TextSpan(
-            //     text: 'Telephone Num.: ',
-            //     style: const TextStyle(
-            //         color: Colors.black, fontWeight: FontWeight.bold),
-            //     children: [
-            //       TextSpan(
-            //         text: '+603-7886 9219',
-            //         style: const TextStyle(color: Colors.blue),
-            //         recognizer: TapGestureRecognizer()
-            //           ..onTap = () {
-            //             _launchURL('tel:+60378869219');
-            //           },
-            //       ),
-            //     ],
-            //   ),
-            // ),
-            const SizedBox(height: 8),
-
+            Text(
+              'Follow us on social media',
+              style: TextStyle(
+                fontSize: 14,
+                color: AppTheme.darkBlack.withOpacity(0.7),
+              ),
+            ),
+            const SizedBox(height: 24),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                GestureDetector(
-                  child: const Icon(
-                    Icons.facebook_sharp,
-                    color: Colors.blue,
-                    size: 64,
-                  ),
-                  onTap: () => _launchURL(
-                      'https://www.facebook.com/klangvalley4locals/'),
+                _buildSocialButton(
+                  icon: Icons.facebook_sharp,
+                  color: const Color(0xFF1877F2),
+                  label: 'Facebook',
+                  onTap: () => _launchURL('https://www.facebook.com/klangvalley4locals/'),
                 ),
-                GestureDetector(
-                  child: const Icon(
-                    MyFlutterApp.instagram_1,
-                    color: Colors.pink,
-                    size: 64,
-                  ),
-                  onTap: () => _launchURL(
-                      'https://www.instagram.com/klangvalley4locals/'),
-                ),
-                GestureDetector(
-                  child: const Icon(
-                    Icons.tiktok,
-                    size: 64,
-                  ),
-                  onTap: () =>
-                      _launchURL('https://www.tiktok.com/@klangvalley4locals'),
-                ),
-                GestureDetector(
-                  child: const Icon(
-                    Icons.public,
-                    color: Colors.grey,
-                    size: 64,
-                  ),
-                  onTap: () =>
-                      _launchURL('https://www.klangvalley4locals.com.my/'),
+                _buildSocialButton(
+                  icon: MyFlutterApp.instagram_1,
+                  color: const Color(0xFFE4405F),
+                  label: 'Instagram',
+                  onTap: () => _launchURL('https://www.instagram.com/klangvalley4locals/'),
                 ),
               ],
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                _buildSocialButton(
+                  icon: Icons.tiktok,
+                  color: AppTheme.darkBlack,
+                  label: 'TikTok',
+                  onTap: () => _launchURL('https://www.tiktok.com/@klangvalley4locals'),
+                ),
+                _buildSocialButton(
+                  icon: Icons.public,
+                  color: const Color(0xFF4CAF50),
+                  label: 'Website',
+                  onTap: () => _launchURL('https://www.klangvalley4locals.com.my/'),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
-            Center(
+  Widget _buildSocialButton({
+    required IconData icon,
+    required Color color,
+    required String label,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 140,
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Column(
+          children: [
+            Icon(icon, color: color, size: 40),
+            const SizedBox(height: 8),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: AppTheme.darkBlack,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildVersionCard() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: AppTheme.primaryYellow.withOpacity(0.3),
+          width: 2,
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: AppTheme.primaryYellow.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: const Icon(
+                Icons.info_outline_rounded,
+                color: AppTheme.primaryYellow,
+                size: 28,
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
               child: FutureBuilder<PackageInfo>(
                 future: PackageInfo.fromPlatform(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    // While waiting for the package info, show a loading indicator
-                    return CircularProgressIndicator();
+                    return const SizedBox(
+                      height: 20,
+                      width: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation<Color>(AppTheme.primaryYellow),
+                      ),
+                    );
                   } else if (snapshot.hasError) {
-                    // If there's an error, show an error message
-                    return Text('Error: ${snapshot.error}');
+                    return Text(
+                      'Version unavailable',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: AppTheme.textGrey,
+                      ),
+                    );
                   } else {
-                    // If the package info is available, display the app version
                     String appVersion = snapshot.data!.version;
                     String buildNumber = snapshot.data!.buildNumber;
 
-                    return Text('App Version: $appVersion+$buildNumber');
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'App Version',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: AppTheme.textGrey,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          '$appVersion (Build $buildNumber)',
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: AppTheme.darkBlack,
+                          ),
+                        ),
+                      ],
+                    );
                   }
                 },
               ),
             ),
-            const SizedBox(
-              height: 10,
-            ),
-            const Text('Copyrighted by: Bluedale Pulishing Sdn. Bhd.')
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildCopyrightSection() {
+    return Column(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: AppTheme.darkBlack.withOpacity(0.05),
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.copyright_rounded,
+                size: 18,
+                color: AppTheme.textGrey,
+              ),
+              const SizedBox(width: 8),
+              Flexible(
+                child: Text(
+                  '${DateTime.now().year} Bluedale Publishing Sdn. Bhd.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: AppTheme.textGrey,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 16),
+        Text(
+          'All rights reserved',
+          style: TextStyle(
+            fontSize: 12,
+            color: AppTheme.textGrey.withOpacity(0.7),
+          ),
+        ),
+      ],
     );
   }
 }
