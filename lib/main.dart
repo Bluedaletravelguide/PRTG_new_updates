@@ -15,6 +15,7 @@ import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:peraktheguide/stay.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:peraktheguide/perak_passport_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -282,6 +283,19 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                   ),
                   NavigationDestination(
                     selectedIcon: Icon(
+                      Icons.card_travel_rounded, // icon passport-ish
+                      color: Color(0xFF1A1A1A),
+                      size: 28,
+                    ),
+                    icon: Icon(
+                      Icons.card_travel_outlined,
+                      color: Color(0xFF666666),
+                      size: 24,
+                    ),
+                    label: 'Passport',
+                  ),
+                  NavigationDestination(
+                    selectedIcon: Icon(
                       Icons.menu_book_rounded,
                       color: Color(0xFF1A1A1A),
                       size: 28,
@@ -302,6 +316,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
           duration: const Duration(milliseconds: 300),
           child: [
             HomeScreen(),
+            const PerakPassportPage(),
             Ebook(),
           ][currentPageIndex],
         ),
